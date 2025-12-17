@@ -58,7 +58,7 @@
 
 
 input {
-  background-color: #fff;
+  background-color: inherit;
   padding: 0.375rem 0.75rem;
   border: 1px solid #bdbdbd;
   border-radius: 0.25rem;
