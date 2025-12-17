@@ -1,33 +1,65 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
+import Header from './components/Header'
+import InputTask from './components/InputTask'
+import ShowTasks from './components/ShowTasks'
+
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const[tasks, setTask] = useState(() => {
+    const saved = localStorage.getItem('tasks')
+    return saved ? JSON.parse(saved) : []
+  })
+
+  // const [tasks, setTask] = useState([
+  //   { id: 1, title: 'Test task', isDone: false, create: 1 },
+  // ])
+
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks))
+  }, [tasks])
+
+  const deleteTask = (id) => {
+    setTask((tasks) => tasks.filter((item) => item.id != id))
+  }
+
+  const isDoneCheacked = (id) => {
+    setTask((tasks) =>
+      tasks.map((item) =>
+        item.id === id ? { ...item, isDone: !item.isDone } : item
+      )
+    )
+  }
+
+  const editTitle = (id, newTitle) => {
+    setTask((tasks) =>
+      tasks.map((item) =>
+        item.id === id ? { ...item, title: newTitle } : item
+      )
+    )
+  }
+
+  function handleDeleteTasks() {
+    setTask([])
+  }
+  function handleDeleteDoneTasks() {
+    setTask((tasks) => tasks.filter((task) => !task.isDone))
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Header />
+      <InputTask setTask={setTask} deleteTask={deleteTask} />
+      <ShowTasks
+        tasks={tasks}
+        deleteTask={deleteTask}
+        isDoneCheacked={isDoneCheacked}
+        editTitle={editTitle}
+        onDeleteTasks={handleDeleteTasks}
+        onDeleteDoneTasks={handleDeleteDoneTasks}
+      />
     </>
   )
 }
