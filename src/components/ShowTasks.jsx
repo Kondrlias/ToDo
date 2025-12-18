@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import Task from './Task';
+import { useState } from 'react'
+import Task from './Task'
 
 const ShowTasks = ({
   tasks,
@@ -9,23 +9,22 @@ const ShowTasks = ({
   onDeleteTasks,
   onDeleteDoneTasks,
 }) => {
-  const numTask = tasks.filter((task) => !task.isDone).length;
-  const [sortBy, setSortBy] = useState('all');
-  const [sortOrder, setSortOrder] = useState('none');
-  let sortedItems;
+  const numTask = tasks.filter((task) => !task.isDone).length
+  const [sortBy, setSortBy] = useState('all')
+  const [sortOrder, setSortOrder] = useState('none')
 
-  if (sortBy == 'all') sortedItems = tasks;
-  if (sortBy == 'active') sortedItems = tasks.filter((task) => !task.isDone);
-  if (sortBy == 'isDone') sortedItems = tasks.filter((task) => task.isDone);
+  const sortedItems = [...tasks]
+    .filter(task => {
+      if (sortBy === 'active') return !task.isDone
+      if (sortBy === 'isDone') return task.isDone
+      return task
+    }).sort((a, b) => {
+      if (sortOrder === 'start') return b.create - a.create
+      if (sortOrder === 'end') return a.create - b.create
+      return 0
+    })
 
-  if (sortOrder === 'start') {
-    sortedItems.sort((a, b) => b.create - a.create);
-  }
-  if (sortOrder === 'end') {
-    sortedItems.sort((a, b) => a.create - b.create);
-  }
-
-  if (!tasks.length) return <h2>Жду твои задачи</h2>;
+  if (!tasks.length) return <h2>Жду твои задачи</h2>
 
   return (
     <>
@@ -39,7 +38,7 @@ const ShowTasks = ({
               isDoneCheacked={isDoneCheacked}
               editTitle={editTitle}
             />
-          );
+          )
         })}
       </div>
       <hr className=" pb-5" />
@@ -48,7 +47,7 @@ const ShowTasks = ({
         <select
           value={sortBy}
           onChange={(e) => {
-            setSortBy(e.target.value);
+            setSortBy(e.target.value)
           }}
         >
           <option value="all">Все</option>
@@ -67,7 +66,7 @@ const ShowTasks = ({
         <button onClick={() => onDeleteTasks()}>Delete All</button>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ShowTasks;
+export default ShowTasks

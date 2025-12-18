@@ -13,7 +13,7 @@ const InputTask = ({ setTask }) => {
     if (text.trim()) {
       setTask((tasks) => [
         ...tasks,
-        { id: crypto.randomUUID(), title: text, isDone: false, create: new Date() },
+        { id: crypto.randomUUID(), title: text, isDone: false, create: Date.now() },
       ]);
       setText('');
     } else {
