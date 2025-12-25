@@ -1,66 +1,37 @@
-import { useEffect, useState } from 'react'
+import { Route, Routes } from 'react-router'
 import './App.css'
-import Header from './components/Header'
-import InputTask from './components/InputTask'
-import ShowTasks from './components/ShowTasks'
+import NoContent from './components/NoContent'
+import LogIn from './components/User/LogIn'
+import Registration from './components/User/Registration'
+import Thanks from './components/User/ThanksRegister'
+import UserTasks from './components/UserTasks'
 
 
 function App() {
 
-  const[tasks, setTask] = useState(() => {
-    const saved = localStorage.getItem('tasks')
-    return saved ? JSON.parse(saved) : []
-  })
+  'kondr@gmail.com'
+  '123456L_k'
 
-  // const [tasks, setTask] = useState([
-  //   { id: 1, title: 'Test task', isDone: false, create: 1 },
-  // ])
-
-
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks))
-  }, [tasks])
-
-  const deleteTask = (id) => {
-    setTask((tasks) => tasks.filter((item) => item.id != id))
-  }
-
-  const isDoneCheacked = (id) => {
-    setTask((tasks) =>
-      tasks.map((item) =>
-        item.id === id ? { ...item, isDone: !item.isDone } : item
-      )
-    )
-  }
-
-  const editTitle = (id, newTitle) => {
-    setTask((tasks) =>
-      tasks.map((item) =>
-        item.id === id ? { ...item, title: newTitle } : item
-      )
-    )
-  }
-
-  function handleDeleteTasks() {
-    setTask([])
-  }
-  function handleDeleteDoneTasks() {
-    setTask((tasks) => tasks.filter((task) => !task.isDone))
-  }
+  let username
+  let email
+  let password
+  let gender
+  let age
+  let token = localStorage.getItem('token')
 
   return (
     <>
-      <Header />
-      <InputTask setTask={setTask} deleteTask={deleteTask} />
-      <ShowTasks
-        tasks={tasks}
-        deleteTask={deleteTask}
-        isDoneCheacked={isDoneCheacked}
-        editTitle={editTitle}
-        onDeleteTasks={handleDeleteTasks}
-        onDeleteDoneTasks={handleDeleteDoneTasks}
-      />
+
+      <Routes>
+        <Route path='/' element={<LogIn email={email} password={password} token={token} />} />
+        <Route path='/registration' element={<Registration email={email} password={password} username={username} age={age} gender={gender} />} />
+        <Route path='/usertasks' element={token ? <UserTasks token={token} /> : <LogIn />} />
+        <Route path="*" element={<NoContent />} />
+        <Route path="/thanks" element={<Thanks />} />
+      </Routes>
+
     </>
+
   )
 }
 

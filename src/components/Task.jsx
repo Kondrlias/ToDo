@@ -20,9 +20,7 @@ const Task = ({ task, deleteTask, isDoneCheacked, editTitle }) => {
   }
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      saveEdit()
-    }
+    if (e.key === 'Enter') saveEdit()
 
     if (e.key === 'Escape') {
       setEditText(task.title)
@@ -34,24 +32,37 @@ const Task = ({ task, deleteTask, isDoneCheacked, editTitle }) => {
   return (
     <div>
       {!isEdit ? (
-        <div className=" flex gap-5 items-center justify-between">
-          <div className='flex gap-8 items-center'>
+        <div className="flex gap-5 items-center justify-between">
+          <div className="flex gap-8 items-center">
             <input
               type="checkbox"
-              checked={task.isDone}
-              onChange={() => isDoneCheacked(task.id)}
+              checked={task.isCompleted}
+              onChange={() =>
+                isDoneCheacked(task.id, task.isCompleted)
+              }
             />
-            <p className={task.isDone ? 'isDone' : ''}>{task.title}</p>
+
+            <p className={task.isCompleted ? 'isDone' : ''}>
+              {task.title}
+            </p>
           </div>
-          <div className='flex gap-5 items-center '>
-            <button onClick={() => setIsEdit(true)}>Изменить</button>
-            <button onClick={() => deleteTask(task.id)}>❌</button>
+
+          <div className="flex gap-5 items-center">
+            <button onClick={() => setIsEdit(true)}>
+              Изменить
+            </button>
+            <button onClick={() => deleteTask(task.id)}>
+              ❌
+            </button>
           </div>
         </div>
       ) : (
-          <div className='w-full'>
-          {error && <p className="text-red-500 text-xs">{error}</p>}
-          <input 
+        <div className="w-full">
+          {error && (
+            <p className="text-red-500 text-xs">{error}</p>
+          )}
+
+          <input
             type="text"
             value={editText}
             onChange={(e) => setEditText(e.target.value)}
@@ -59,6 +70,7 @@ const Task = ({ task, deleteTask, isDoneCheacked, editTitle }) => {
             autoFocus
             className="mr-5 w-3/4"
           />
+
           <button onClick={saveEdit}>Сохранить</button>
         </div>
       )}

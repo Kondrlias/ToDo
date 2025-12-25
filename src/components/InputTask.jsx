@@ -1,35 +1,47 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
-const InputTask = ({ setTask }) => {
-  const [text, setText] = useState('');
-  const [error, setError] = useState('');
+const InputTask = ({ token, setTask }) => {
+  const [text, setText] = useState('')
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
-    setText(e.target.value);
-    setError('');
-  };
+    setText(e.target.value)
+    setError('')
+  }
 
-  const addTask = () => {
-    if (text.trim()) {
-      setTask((tasks) => [
-        ...tasks,
-        { id: crypto.randomUUID(), title: text, isDone: false, create: Date.now() },
-      ]);
-      setText('');
-    } else {
-      setError('Не должно быть пусто');
+  const addTask = async (token) => {
+    if (!text.trim()) {
+      setError('Введите задачу')
+      return
     }
-  };
+    try {
+      const response = await fetch('https://todo-redev.herokuapp.com/api/todos', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: `${text}`,
+        }),
+      })
+      const data = await response.json()
+      setTask(prevTasks => [...prevTasks, data])
+      setText('')
+    } catch (error) {
+      console.log('error: ', error)
+    }
+  }
 
   const handleClick = () => {
-    addTask();
-  };
+    addTask(token)
+  }
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      addTask();
+      addTask(token)
     }
-  };
+  }
 
   return (
     <>
@@ -44,7 +56,7 @@ const InputTask = ({ setTask }) => {
       <button onClick={handleClick}>Добавить</button>
       {error && <p style={{ color: 'red', fontSize: '10px' }}>{error}</p>}
     </>
-  );
-};
+  )
+}
 
-export default InputTask;
+export default InputTask
