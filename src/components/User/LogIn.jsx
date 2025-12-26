@@ -42,8 +42,8 @@ const LogIn = ({ email, password, token, setToken }) => {
 	}
 
 	return (
-		<div className="flex flex-col">
-			<h1 className="pb-10">
+		<div className="flex flex-col ">
+			<h1 className="">
 				Welcome to{' '}
 				<span className='font-bold text-sky-500 dark:text-sky-400"'>
 					ToDoList
@@ -57,7 +57,7 @@ const LogIn = ({ email, password, token, setToken }) => {
 			)}
 
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<div>
+				<div className='flex flex-col gap-1'>
 					<label>Email</label>
 					<Controller
 						name="email"
@@ -76,7 +76,7 @@ const LogIn = ({ email, password, token, setToken }) => {
 					<p style={{ color: 'red' }}>{errors.email?.message}</p>
 				</div>
 
-				<div>
+				<div className='flex flex-col gap-2'>
 					<label>Пароль</label>
 					<Controller
 						name="password"
@@ -96,6 +96,7 @@ const LogIn = ({ email, password, token, setToken }) => {
 									{...field}
 									type={showPassword ? 'text' : 'password'}
 									placeholder="Введите пароль"
+									className='w-full'
 								/>
 								<button
 									type="button"

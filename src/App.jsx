@@ -8,10 +8,6 @@ import Thanks from './components/User/ThanksRegister'
 import UserTasks from './components/UserTasks'
 
 function App() {
-
-  ('kondr@gmail.com');
-  ('123456L_k')
-
   let username
   let email
   let password
