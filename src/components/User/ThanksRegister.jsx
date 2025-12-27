@@ -21,7 +21,7 @@ const Thanks = () => {
     <>
       <h1 className="pb-10">Спасибо за регистрацию!</h1>
       <p>Переходим на страницу входа через {seconds} секунд…</p>
-      <button className="style-button" onClick={() => navigate('/main')}>
+      <button className="style-button" onClick={() => navigate('/')}>
         Перейти сейчас
       </button>
     </>

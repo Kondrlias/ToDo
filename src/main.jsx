@@ -1,10 +1,10 @@
-import { createRoot } from 'react-dom/client'
-import { HashRouter } from 'react-router'
-import App from './App.jsx'
-import './index.css'
+import { createRoot } from 'react-dom/client';
+import { HashRouter } from 'react-router';
+import App from './App.jsx';
+import './index.css';
 
 createRoot(document.getElementById('root')).render(
   <HashRouter>
     <App />
   </HashRouter>
-)
+);

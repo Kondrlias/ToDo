@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router'
 
-const LogIn = ({ email, password, token, setToken }) => {
+const BASE_API = import.meta.env.VITE_API_BASE_URL
+const AUTH = import.meta.env.VITE_API_AUTH
+
+const LogIn = ({ setToken }) => {
 	const {
 		control,
 		handleSubmit,
 		formState: { errors },
-		reset,
 	} = useForm()
 	const navigate = useNavigate()
 	const [showPassword, setShowPassword] = useState(false)
@@ -15,17 +17,14 @@ const LogIn = ({ email, password, token, setToken }) => {
 
 	const login = async (email, password) => {
 		try {
-			const response = await fetch(
-				'https://todo-redev.herokuapp.com/api/auth/login',
-				{
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						email,
-						password,
-					}),
-				}
-			)
+			const response = await fetch(`${BASE_API}${AUTH}/login`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					email,
+					password,
+				}),
+			})
 
 			const data = await response.json()
 			localStorage.setItem('token', data.token)
@@ -57,7 +56,7 @@ const LogIn = ({ email, password, token, setToken }) => {
 			)}
 
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<div className='flex flex-col gap-1'>
+				<div className="flex flex-col gap-1">
 					<label>Email</label>
 					<Controller
 						name="email"
@@ -76,7 +75,7 @@ const LogIn = ({ email, password, token, setToken }) => {
 					<p style={{ color: 'red' }}>{errors.email?.message}</p>
 				</div>
 
-				<div className='flex flex-col gap-2'>
+				<div className="flex flex-col gap-2">
 					<label>Пароль</label>
 					<Controller
 						name="password"
@@ -96,7 +95,7 @@ const LogIn = ({ email, password, token, setToken }) => {
 									{...field}
 									type={showPassword ? 'text' : 'password'}
 									placeholder="Введите пароль"
-									className='w-full'
+									className="w-full"
 								/>
 								<button
 									type="button"

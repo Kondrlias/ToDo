@@ -1,52 +1,53 @@
-import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router';
+import { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router'
 
-const Registration = ({ username, email, password, gender, age }) => {
+const BASE_API = import.meta.env.VITE_API_BASE_URL
+const USERS = import.meta.env.VITE_API_USERS
+
+
+const Registration = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
-  const nav = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [serverError, setServerError] = useState('');
+  } = useForm()
+  const nav = useNavigate()
+  const [showPassword, setShowPassword] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [serverError, setServerError] = useState('')
 
   const registration = async (username, email, password, gender, age) => {
     try {
-      const response = await fetch(
-        'https://todo-redev.herokuapp.com/api/users/register',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, email, password, gender, age }),
-        }
-      );
+      const response = await fetch(`${BASE_API}${USERS}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password, gender, age }),
+      })
 
-      const data = await response.json();
-      console.log('data: ', data);
+      const data = await response.json()
+      console.log('data: ', data)
 
       if (data && data.id) {
-        setSuccess(true);
-        setServerError('');
+        setSuccess(true)
+        setServerError('')
         reset({
           username: '',
           email: '',
           password: '',
           gender: 'female',
           age: '',
-        });
+        })
       } else {
-        setSuccess(false);
-        setServerError(data.message);
+        setSuccess(false)
+        setServerError(data.message)
       }
     } catch (error) {
-      console.log('error: ', error);
-      setServerError('Произошла ошибка при регистрации');
+      console.log('error: ', error)
+      setServerError('Произошла ошибка при регистрации')
     }
-  };
+  }
 
   const onSubmit = async (data) => {
     await registration(
@@ -55,9 +56,9 @@ const Registration = ({ username, email, password, gender, age }) => {
       data.password,
       data.gender,
       data.age
-    );
-    nav('/thanks');
-  };
+    )
+    nav('/thanks')
+  }
 
   return (
     <>
@@ -99,10 +100,10 @@ const Registration = ({ username, email, password, gender, age }) => {
               },
             }}
             render={({ field }) => (
-              <input {...field} placeholder="Введите имя" />
+              <input {...field} placeholder="Введите имя" className="w-full" />
             )}
           />
-          <p style={{ color: 'red' }}>{errors.name?.message}</p>
+          <p style={{ color: 'red' }}>{errors.username?.message}</p>
         </div>
 
         <div>
@@ -118,7 +119,7 @@ const Registration = ({ username, email, password, gender, age }) => {
               },
             }}
             render={({ field }) => (
-              <input {...field} placeholder="Введите Email" />
+              <input {...field} placeholder="Введите Email" className="w-full" />
             )}
           />
           <p style={{ color: 'red' }}>{errors.email?.message}</p>
@@ -144,6 +145,7 @@ const Registration = ({ username, email, password, gender, age }) => {
                   {...field}
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Введите пароль"
+                  className="w-full"
                 />
                 <button
                   type="button"
@@ -158,14 +160,14 @@ const Registration = ({ username, email, password, gender, age }) => {
           <p style={{ color: 'red' }}>{errors.password?.message}</p>
         </div>
 
-        <div>
+        <div className='flex items-center gap-10'>
           <label>Пол</label>
           <Controller
             name="gender"
             control={control}
             defaultValue="female"
             render={({ field }) => (
-              <select {...field}>
+              <select {...field} >
                 <option value="male">male</option>
                 <option value="female">female</option>
               </select>
@@ -182,7 +184,7 @@ const Registration = ({ username, email, password, gender, age }) => {
               required: 'Введите возраст',
             }}
             render={({ field }) => (
-              <input {...field} type="number" placeholder="Введите возраст" />
+              <input {...field} type="number" placeholder="Введите возраст" className="w-full" />
             )}
           />
           <p style={{ color: 'red' }}>{errors.age?.message}</p>
@@ -192,7 +194,7 @@ const Registration = ({ username, email, password, gender, age }) => {
         </button>
       </form>
     </>
-  );
-};
+  )
+}
 
-export default Registration;
+export default Registration
