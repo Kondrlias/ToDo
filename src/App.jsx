@@ -1,67 +1,30 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import Header from './components/Header'
-import InputTask from './components/InputTask'
-import ShowTasks from './components/ShowTasks'
-
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import './App.css';
+import Header from './components/Header';
+import InputTask from './components/InputTask';
+import ShowTasks from './components/ShowTasks';
+import { editTaskAction } from './redux/actions/tasksAction';
 
 function App() {
-
-  const[tasks, setTask] = useState(() => {
-    const saved = localStorage.getItem('tasks')
-    return saved ? JSON.parse(saved) : []
-  })
-
-  // const [tasks, setTask] = useState([
-  //   { id: 1, title: 'Test task', isDone: false, create: 1 },
-  // ])
-
+  const { tasks } = useSelector((store) => store.tasks);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks))
-  }, [tasks])
-
-  const deleteTask = (id) => {
-    setTask((tasks) => tasks.filter((item) => item.id != id))
-  }
-
-  const isDoneCheacked = (id) => {
-    setTask((tasks) =>
-      tasks.map((item) =>
-        item.id === id ? { ...item, isDone: !item.isDone } : item
-      )
-    )
-  }
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   const editTitle = (id, newTitle) => {
-    setTask((tasks) =>
-      tasks.map((item) =>
-        item.id === id ? { ...item, title: newTitle } : item
-      )
-    )
-  }
-
-  function handleDeleteTasks() {
-    setTask([])
-  }
-  function handleDeleteDoneTasks() {
-    setTask((tasks) => tasks.filter((task) => !task.isDone))
-  }
+    dispatch(editTaskAction(id, newTitle));
+  };
 
   return (
     <>
       <Header />
-      <InputTask setTask={setTask} deleteTask={deleteTask} />
-      <ShowTasks
-        tasks={tasks}
-        deleteTask={deleteTask}
-        isDoneCheacked={isDoneCheacked}
-        editTitle={editTitle}
-        onDeleteTasks={handleDeleteTasks}
-        onDeleteDoneTasks={handleDeleteDoneTasks}
-      />
+      <InputTask />
+      <ShowTasks editTitle={editTitle} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

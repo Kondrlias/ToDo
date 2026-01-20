@@ -1,28 +1,24 @@
-import { useState } from 'react';
-
-const InputTask = ({ setTask }) => {
-  const [text, setText] = useState('');
+import { memo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearTextAction, createAddAction } from '../redux/actions/textAction';
+import InputTitle from './shared/InputTitle';
+const InputTask = () => {
+  const dispatch = useDispatch();
+  const { text } = useSelector((store) => store.text);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    setText(e.target.value);
-    setError('');
+    dispatch({ type: 'change', payload: e.target.value });
   };
 
   const addTask = () => {
     if (text.trim()) {
-      setTask((tasks) => [
-        ...tasks,
-        { id: crypto.randomUUID(), title: text, isDone: false, create: Date.now() },
-      ]);
-      setText('');
+      dispatch(createAddAction(text));
+      dispatch(clearTextAction());
+      setError('');
     } else {
-      setError('Не должно быть пусто');
+      setError('Введите задание');
     }
-  };
-
-  const handleClick = () => {
-    addTask();
   };
 
   const handleKeyDown = (e) => {
@@ -32,19 +28,21 @@ const InputTask = ({ setTask }) => {
   };
 
   return (
-    <>
-      <input
-        type="text"
-        value={text}
-        placeholder="Введи задание"
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        className="input"
-      />
-      <button onClick={handleClick}>Добавить</button>
+    <div>
       {error && <p style={{ color: 'red', fontSize: '10px' }}>{error}</p>}
-    </>
+      <div className="flex">
+        <InputTitle
+          title={text}
+          placeholder={'What is the task today?'}
+          onChange={handleChange}
+          handleKeyDown={handleKeyDown}
+        />
+        <button className="ml-2" onClick={addTask}>
+          Add task
+        </button>
+      </div>
+    </div>
   );
 };
 
-export default InputTask;
+export default memo(InputTask);
