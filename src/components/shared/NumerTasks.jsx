@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteAllAction } from '../../redux/actions/tasksAction';
+import { deleteAll } from '../../redux/slises/tasksSlice';
 
 function NumerTasks() {
   const dispatch = useDispatch();
@@ -10,7 +10,7 @@ function NumerTasks() {
       <p>All tasks: {tasks.length}</p>
       <button
         onClick={() => {
-          dispatch(deleteAllAction());
+          dispatch(deleteAll());
         }}
       >
         Delete All

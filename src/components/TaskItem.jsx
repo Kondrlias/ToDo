@@ -1,41 +1,41 @@
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { checkTaskAction, editTaskAction } from '../redux/actions/tasksAction';
-import { DeleteButton } from './shared/deleteButton';
-import DoneCheacked from './shared/DoneCheacked';
-import InputTitle from './shared/InputTitle';
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { checkTask, editTask } from '../redux/slises/tasksSlice'
+import { DeleteButton } from './shared/deleteButton'
+import DoneCheacked from './shared/DoneCheacked'
+import InputTitle from './shared/InputTitle'
 
 const TaskItem = ({ task }) => {
-  const [isEdit, setIsEdit] = useState(false);
-  const [editText, setEditText] = useState(task.title);
-  const [error, setError] = useState('');
-  const dispatch = useDispatch();
+  const [isEdit, setIsEdit] = useState(false)
+  const [editText, setEditText] = useState(task.title)
+  const [error, setError] = useState('')
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    setEditText(task.title);
-  }, [task.title]);
+    setEditText(task.title)
+  }, [task.title])
 
   const handleEdit = () => {
     if (!editText.trim()) {
-      setError('Задание не должно быть пустым');
-      return;
+      setError('Задание не должно быть пустым')
+      return
     }
-    dispatch(editTaskAction(task.id, editText));
-    setError('');
-    setIsEdit(false);
-  };
+    dispatch(editTask({ id: task.id, title: editText }))
+    setError('')
+    setIsEdit(false)
+  }
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      handleEdit();
+      handleEdit()
     }
 
     if (e.key === 'Escape') {
-      setEditText(task.title);
-      setError('');
-      setIsEdit(false);
+      setEditText(task.title)
+      setError('')
+      setIsEdit(false)
     }
-  };
+  }
   return (
     <div className="">
       {!isEdit ? (
@@ -44,7 +44,7 @@ const TaskItem = ({ task }) => {
             <DoneCheacked id={task.id} isDone={task.isDone} />
             <p
               className={task.isDone ? 'isDone' : ''}
-              onClick={() => dispatch(checkTaskAction(task.id))}
+              onClick={() => dispatch(checkTask(task.id))}
             >
               {task.title}
             </p>
@@ -55,18 +55,20 @@ const TaskItem = ({ task }) => {
           </div>
         </div>
       ) : (
-        <div className="flex mt-2 mb-2 gap-2.5">
+        <div>
           {error && <p className="text-red-500 text-xs w-3/4">{error}</p>}
-          <InputTitle
-            title={editText}
-            onChange={(e) => setEditText(e.target.value)}
-            handleKeyDown={handleKeyDown}
-          />
-          <button onClick={handleEdit}>Save</button>
+          <div className="flex mt-2 mb-2 gap-2.5">
+            <InputTitle
+              title={editText}
+              onChange={(e) => setEditText(e.target.value)}
+              handleKeyDown={handleKeyDown}
+            />
+            <button onClick={handleEdit}>Save</button>
+          </div>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default TaskItem;
+export default TaskItem

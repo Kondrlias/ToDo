@@ -1,11 +1,11 @@
 import { useDispatch } from 'react-redux';
-import { deleteTaskAction } from '../../redux/actions/tasksAction';
+import { deleteTask } from '../../redux/slises/tasksSlice';
 
 export function DeleteButton({ id }) {
   const dispatch = useDispatch();
 
   const handleDeleteTask = () => {
-    dispatch(deleteTaskAction(id));
+    dispatch(deleteTask(id));
   };
 
   return (

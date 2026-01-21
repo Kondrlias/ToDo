@@ -1,31 +1,32 @@
-import { memo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { clearTextAction, createAddAction } from '../redux/actions/textAction';
-import InputTitle from './shared/InputTitle';
+import { memo, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { change, clear } from '../redux/slises/textSlice'
+import InputTitle from './shared/InputTitle'
+import { addNewTask } from '../redux/slises/tasksSlice'
 const InputTask = () => {
-  const dispatch = useDispatch();
-  const { text } = useSelector((store) => store.text);
-  const [error, setError] = useState('');
+  const dispatch = useDispatch()
+  const { text } = useSelector((store) => store.text)
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
-    dispatch({ type: 'change', payload: e.target.value });
-  };
+    dispatch(change(e.target.value))
+  }
 
   const addTask = () => {
     if (text.trim()) {
-      dispatch(createAddAction(text));
-      dispatch(clearTextAction());
-      setError('');
+      dispatch(addNewTask(text))
+      dispatch(clear())
+      setError('')
     } else {
-      setError('Введите задание');
+      setError('Введите задание')
     }
-  };
+  }
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      addTask();
+      addTask()
     }
-  };
+  }
 
   return (
     <div>
@@ -42,7 +43,7 @@ const InputTask = () => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default memo(InputTask);
+export default memo(InputTask)

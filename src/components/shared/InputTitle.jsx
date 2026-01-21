@@ -10,7 +10,7 @@ function InputTitle({ handleKeyDown, onChange, title, placeholder }) {
         onChange={onChange}
         onKeyDown={handleKeyDown}
         autoFocus
-		className='w-90'
+        className="w-90"
       />
     </div>
   );
