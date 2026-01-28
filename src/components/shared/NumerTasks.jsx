@@ -3,7 +3,7 @@ import { deleteAll, selectTasks } from '../../redux/slices/tasksSlice';
 
 function NumerTasks() {
   const dispatch = useDispatch();
-  const  tasks  = useSelector(selectTasks);
+  const tasks = useSelector(selectTasks);
 
   return (
     <div className="m-2 flex justify-between items-center">

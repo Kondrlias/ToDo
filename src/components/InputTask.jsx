@@ -6,7 +6,7 @@ import InputTitle from './shared/InputTitle';
 
 const InputTask = () => {
   const dispatch = useDispatch();
-  const  text  = useSelector(selectText);
+  const text = useSelector(selectText);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
