@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteAll } from '../../redux/slises/tasksSlice';
+import { deleteAll, selectTasks } from '../../redux/slices/tasksSlice';
 
 function NumerTasks() {
   const dispatch = useDispatch();
-  const { tasks } = useSelector((store) => store.tasks);
+  const  tasks  = useSelector(selectTasks);
 
   return (
     <div className="m-2 flex justify-between items-center">

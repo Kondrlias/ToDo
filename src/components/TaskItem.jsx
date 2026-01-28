@@ -1,41 +1,41 @@
-import { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { checkTask, editTask } from '../redux/slises/tasksSlice'
-import { DeleteButton } from './shared/deleteButton'
-import DoneCheacked from './shared/DoneCheacked'
-import InputTitle from './shared/InputTitle'
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { checkTask, editTask } from '../redux/slices/tasksSlice';
+import { DeleteButton } from './shared/deleteButton';
+import DoneCheacked from './shared/DoneCheacked';
+import InputTitle from './shared/InputTitle';
 
 const TaskItem = ({ task }) => {
-  const [isEdit, setIsEdit] = useState(false)
-  const [editText, setEditText] = useState(task.title)
-  const [error, setError] = useState('')
-  const dispatch = useDispatch()
+  const [isEdit, setIsEdit] = useState(false);
+  const [editText, setEditText] = useState(task.title);
+  const [error, setError] = useState('');
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setEditText(task.title)
-  }, [task.title])
+    setEditText(task.title);
+  }, [task.title]);
 
   const handleEdit = () => {
     if (!editText.trim()) {
-      setError('Задание не должно быть пустым')
-      return
+      setError('Задание не должно быть пустым');
+      return;
     }
-    dispatch(editTask({ id: task.id, title: editText }))
-    setError('')
-    setIsEdit(false)
-  }
+    dispatch(editTask({ id: task.id, title: editText }));
+    setError('');
+    setIsEdit(false);
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      handleEdit()
+      handleEdit();
     }
 
     if (e.key === 'Escape') {
-      setEditText(task.title)
-      setError('')
-      setIsEdit(false)
+      setEditText(task.title);
+      setError('');
+      setIsEdit(false);
     }
-  }
+  };
   return (
     <div className="">
       {!isEdit ? (
@@ -68,7 +68,7 @@ const TaskItem = ({ task }) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default TaskItem
+export default TaskItem;

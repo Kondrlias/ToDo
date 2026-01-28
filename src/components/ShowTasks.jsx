@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux';
+import { selectTasks } from '../redux/slices/tasksSlice';
 import TaskItem from './TaskItem';
 import NumerTasks from './shared/NumerTasks';
 
 const ShowTasks = () => {
-  const { tasks } = useSelector((store) => store.tasks);
+  const tasks = useSelector(selectTasks);
 
   if (!tasks.length) return <h2>Wait your tasks...</h2>;
 

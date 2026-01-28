@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { checkTask } from '../../redux/slises/tasksSlice';
+import { checkTask } from '../../redux/slices/tasksSlice';
 
 export default function DoneCheacked({ id, isDone }) {
   const dispatch = useDispatch();
