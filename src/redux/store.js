@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import tasksSlice from './slices/tasksSlice'
 import textSlice from './slices/textSlice'
+import Auth from './slises/Auth'
 
 const tasksMiddleware = (store) => (next) => (action) => {
   const result = next(action)
@@ -17,6 +18,7 @@ const store = configureStore({
   reducer: combineReducers({
     text: textSlice,
     tasks: tasksSlice,
+    token: Auth,
   }), middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(tasksMiddleware),
 }
