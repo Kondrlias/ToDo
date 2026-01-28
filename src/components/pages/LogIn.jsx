@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router';
 const BASE_API = import.meta.env.VITE_API_BASE_URL;
 const AUTH = import.meta.env.VITE_API_AUTH;
 
-const LogIn = ({ setToken }) => {
+const LogIn = () => {
   const {
     control,
     handleSubmit,
@@ -15,30 +15,29 @@ const LogIn = ({ setToken }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState('');
 
-  // const login = async (email, password) => {
-  // 	try {
-  // 		const response = await fetch(`${BASE_API}${AUTH}/login`, {
-  // 			method: 'POST',
-  // 			headers: { 'Content-Type': 'application/json' },
-  // 			body: JSON.stringify({
-  // 				email,
-  // 				password,
-  // 			}),
-  // 		})
+  const login = async (email, password) => {
+  	try {
+  		const response = await fetch(`${BASE_API}${AUTH}/login`, {
+  			method: 'POST',
+  			headers: { 'Content-Type': 'application/json' },
+  			body: JSON.stringify({
+  				email,
+  				password,
+  			}),
+  		})
 
-  // 		const data = await response.json()
-  // 		localStorage.setItem('token', data.token)
-  // 		setToken(data.token)
-  // 		setServerError('')
-  // 		navigate('/usertasks')
-  // 	} catch (error) {
-  // 		console.log('error: ', error)
-  // 	}
-  // }
+  		const data = await response.json()
+  		localStorage.setItem('token', data.token)
+  		setServerError('')
+  		navigate('/usertasks')
+  	} catch (error) {
+  		console.log('error: ', error)
+  	}
+  }
 
-  // const onSubmit = async (data) => {
-  // 	await login(data.email, data.password)
-  // }
+  const onSubmit = async (data) => {
+  	await login(data.email, data.password)
+  }
 
   return (
     <div className="flex flex-col ">
@@ -55,7 +54,7 @@ const LogIn = ({ setToken }) => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit()}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-1">
           <label>Email</label>
           <Controller
