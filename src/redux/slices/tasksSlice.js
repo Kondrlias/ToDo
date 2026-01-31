@@ -49,6 +49,30 @@ export const createTasks = createAsyncThunk(
   }
 );
 
+export const deleteTask = createAsyncThunk(
+  'tasks/deleteTasks',
+  async (id, thunkAPI) => {
+    try {
+      const store = thunkAPI.getState();
+      const response = await fetch(
+        `https://todo-redev.herokuapp.com/api/todos/${id}`,
+        {
+          method: 'Delete',
+          headers: {
+            Authorization: `Bearer ${store.token.token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 const initialState = {
   tasks: [],
 };
@@ -57,13 +81,6 @@ const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    // addNewTask(state, action) {
-    //   state.tasks.push({
-    //     id: crypto.randomUUID(),
-    //     title: action.payload,
-    //     isDone: false,
-    //   });
-    // },
     editTask(state, action) {
       const task = state.tasks.find((t) => t.id === action.payload.id);
       if (task) {
@@ -76,36 +93,35 @@ const tasksSlice = createSlice({
         task.isDone = !task.isDone;
       }
     },
-    deleteTask(state, action) {
-      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
-    },
     deleteAll(state) {
       state.tasks = [];
     },
   },
   selectors: {
     selectTasks: (state) => state.tasks,
-    selectTasksLoading: (state) => state.tasks.isLoading,
   },
   extraReducers: (builder) => {
-    (builder
-      .addCase(getTasks.fulfilled, (state, action) => {
-        state.tasks = action.payload;
-      })
-      .addCase(getTasks.rejected, (state, action) => {
-        state.error = action.payload;
-      }),
-      builder
-        .addCase(createTasks.fulfilled, (state, action) => {
-          state.tasks.push( action.payload);
-        })
-        .addCase(createTasks.rejected, (state, action) => {
+    builder
+    .addCase(getTasks.fulfilled, (state, action) => {
+      state.tasks = action.payload;
+    })
+    .addCase(createTasks.fulfilled, (state, action) => {
+      state.tasks.push(action.payload);
+    })
+    .addCase(deleteTask.fulfilled, (state, action) => {
+      state.tasks = state.tasks.filter(
+        (task) => task.id !== action.payload.id
+      )
+    }).addMatcher(
+        (action) => action.type.endsWith('/rejected'),
+        (state, action) => {
           state.error = action.payload;
-        }));
+        }
+      );
   },
 });
 
-export const { addNewTask, editTask, checkTask, deleteTask, deleteAll } =
+export const { editTask, checkTask, deleteAll } =
   tasksSlice.actions;
-export const { selectTasks, selectTasksLoading } = tasksSlice.selectors;
+export const { selectTasks } = tasksSlice.selectors;
 export default tasksSlice.reducer;
