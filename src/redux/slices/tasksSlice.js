@@ -1,9 +1,31 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+export const getTasks = createAsyncThunk(
+  'tasks/getTasks',
+  async (state, thunkAPI) => {
+    try {
+      const store = thunkAPI.getState();
+      const response = await fetch(
+        `https://todo-redev.herokuapp.com/api/todos`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${store.token.token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 
 const initialState = {
-  tasks: savedTasks,
+  tasks: [],
 };
 
 const tasksSlice = createSlice({
@@ -38,10 +60,22 @@ const tasksSlice = createSlice({
   },
   selectors: {
     selectTasks: (state) => state.tasks,
+    selectTasksLoading: (state) => state.tasks.isLoading,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getTasks.pending, (state) => {
+      })
+      .addCase(getTasks.fulfilled, (state, action) => {
+        state.tasks = action.payload;
+      })
+      .addCase(getTasks.rejected, (state, action) => {
+        state.error = action.payload;
+      });
   },
 });
 
 export const { addNewTask, editTask, checkTask, deleteTask, deleteAll } =
   tasksSlice.actions;
-export const { selectTasks } = tasksSlice.selectors;
+export const { selectTasks, selectTasksLoading } = tasksSlice.selectors;
 export default tasksSlice.reducer;
