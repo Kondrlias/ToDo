@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 export const getTasks = createAsyncThunk(
   'tasks/getTasks',
@@ -24,6 +24,31 @@ export const getTasks = createAsyncThunk(
   }
 );
 
+export const createTasks = createAsyncThunk(
+  'tasks/createTasks',
+  async (state, thunkAPI) => {
+    try {
+      const store = thunkAPI.getState();
+      const response = await fetch(
+        `https://todo-redev.herokuapp.com/api/todos`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${store.token.token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ title: state }),
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 const initialState = {
   tasks: [],
 };
@@ -32,13 +57,13 @@ const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    addNewTask(state, action) {
-      state.tasks.push({
-        id: crypto.randomUUID(),
-        title: action.payload,
-        isDone: false,
-      });
-    },
+    // addNewTask(state, action) {
+    //   state.tasks.push({
+    //     id: crypto.randomUUID(),
+    //     title: action.payload,
+    //     isDone: false,
+    //   });
+    // },
     editTask(state, action) {
       const task = state.tasks.find((t) => t.id === action.payload.id);
       if (task) {
@@ -63,15 +88,20 @@ const tasksSlice = createSlice({
     selectTasksLoading: (state) => state.tasks.isLoading,
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(getTasks.pending, (state) => {
-      })
+    (builder
       .addCase(getTasks.fulfilled, (state, action) => {
         state.tasks = action.payload;
       })
       .addCase(getTasks.rejected, (state, action) => {
         state.error = action.payload;
-      });
+      }),
+      builder
+        .addCase(createTasks.fulfilled, (state, action) => {
+          state.tasks.push( action.payload);
+        })
+        .addCase(createTasks.rejected, (state, action) => {
+          state.error = action.payload;
+        }));
   },
 });
 

@@ -1,6 +1,6 @@
 import { memo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewTask } from '../redux/slices/tasksSlice';
+import { addNewTask, createTasks } from '../redux/slices/tasksSlice';
 import { change, clear, selectText } from '../redux/slices/textSlice';
 import InputTitle from './shared/InputTitle';
 
@@ -15,7 +15,7 @@ const InputTask = () => {
 
   const addTask = () => {
     if (text.trim()) {
-      dispatch(addNewTask(text));
+      dispatch(createTasks(text));
       dispatch(clear());
       setError('');
     } else {
