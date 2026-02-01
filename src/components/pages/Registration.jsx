@@ -1,64 +1,45 @@
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router';
-
-const BASE_API = import.meta.env.VITE_API_BASE_URL;
-const USERS = import.meta.env.VITE_API_USERS;
+import { registerUser } from '../../redux/slices/Auth';
 
 const Registration = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm();
   const nav = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState('');
+  const dispatch = useDispatch();
 
-  const registration = async (username, email, password, gender, age) => {
+  const onSubmit = async (data) => {
+    setServerError('');
     try {
-      const response = await fetch(`${BASE_API}${USERS}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password, gender, age }),
-      });
+      const resultAction = await dispatch(
+        registerUser({
+          username: data.username,
+          email: data.email,
+          password: data.password,
+          gender: data.gender,
+          age: data.age,
+        })
+      );
 
-      const data = await response.json();
-      console.log('data: ', data);
-
-      if (data && data.id) {
+      if (registerUser.fulfilled.match(resultAction)) {
         setSuccess(true);
-        setServerError('');
-        reset({
-          username: '',
-          email: '',
-          password: '',
-          gender: 'female',
-          age: '',
-        });
+        nav('/thanks');
       } else {
         setSuccess(false);
-        setServerError(data.message);
+        setServerError(resultAction.payload || 'Registration failed');
       }
     } catch (error) {
-      console.log('error: ', error);
       setServerError('Произошла ошибка при регистрации');
     }
   };
-
-  const onSubmit = async (data) => {
-    await registration(
-      data.username,
-      data.email,
-      data.password,
-      data.gender,
-      data.age
-    );
-    nav('/thanks');
-  };
-
   return (
     <>
       <h1 className="pb-10">Создать аккаунт</h1>

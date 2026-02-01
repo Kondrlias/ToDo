@@ -27,6 +27,29 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
+export const registerUser = createAsyncThunk(
+  'users/register',
+  async ({ username, email, password, gender, age }, thunkAPI) => {
+    try {
+      const response = await fetch(
+        `https://todo-redev.herokuapp.com/api/users/register`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password, gender, age }),
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        return thunkAPI.rejectWithValue(data.message || 'Register failed');
+      }
+      return data.token;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 const initialState = {
   token: localStorage.getItem('token'),
 };
@@ -40,11 +63,8 @@ const Auth = createSlice({
     },
     logOut(state) {
       state.token = '';
-      localStorage.removeItem('token')
+      localStorage.removeItem('token');
     },
-    // register(state, action) {
-    // 	state.token = action.payload
-    // }
   },
   selectors: {
     selectToken: (state) => state.token,
@@ -60,6 +80,6 @@ const Auth = createSlice({
   },
 });
 
-export const { logIn, logOut, register } = Auth.actions;
+export const { logIn, logOut } = Auth.actions;
 export const { selectToken } = Auth.selectors;
 export default Auth.reducer;

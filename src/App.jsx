@@ -23,7 +23,7 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path="/usertasks" element={<UserTasks />} />
           </Route>
-          <Route path="/thanks" element={Thanks} />
+          <Route path="/thanks" element={<Thanks />} />
           <Route path="*" element={<NoContent />} />
         </Routes>
       </Suspense>

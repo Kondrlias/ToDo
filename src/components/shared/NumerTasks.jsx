@@ -1,5 +1,5 @@
-import {  useSelector } from 'react-redux';
-import {  selectTasks } from '../../redux/slices/tasksSlice';
+import { useSelector } from 'react-redux';
+import { selectTasks } from '../../redux/slices/tasksSlice';
 
 function NumerTasks() {
   const tasks = useSelector(selectTasks);

@@ -11,7 +11,7 @@ const Thanks = () => {
     }, 1000);
 
     if (seconds === 0) {
-      navigate('/main');
+      navigate('/');
     }
 
     return () => clearInterval(countdown);

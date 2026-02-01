@@ -126,6 +126,7 @@ export const editTask = createAsyncThunk(
 
 const initialState = {
   tasks: [],
+  loading: false,
 };
 
 const tasksSlice = createSlice({
@@ -133,6 +134,7 @@ const tasksSlice = createSlice({
   initialState,
   selectors: {
     selectTasks: (state) => state.tasks,
+    selectLoading: (state) => state.loading,
   },
   extraReducers: (builder) => {
     builder
@@ -164,9 +166,21 @@ const tasksSlice = createSlice({
         (state, action) => {
           state.error = action.payload;
         }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith('/pending'),
+        (state) => {
+          state.loading = true;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith('/fulfilled'),
+        (state) => {
+          state.loading = false;
+        }
       );
   },
 });
 
-export const { selectTasks } = tasksSlice.selectors;
+export const { selectTasks, selectLoading } = tasksSlice.selectors;
 export default tasksSlice.reducer;

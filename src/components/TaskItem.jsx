@@ -41,8 +41,6 @@ const TaskItem = ({ task }) => {
     }
   };
 
-  if (!task) return null;
-
   return (
     <div className="">
       {!isEdit ? (
