@@ -11,6 +11,7 @@ const PrivateRoute = () => {
 const Thanks = lazy(() => import('./components/pages/ThanksRegister'));
 const UserTasks = lazy(() => import('./components/pages/UserTasks'));
 const LogIn = lazy(() => import('./components/pages/LogIn'));
+const Registration = lazy(() => import('./components/pages/Registration'));
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/" element={<LogIn />} />
-          {/* <Route path="/registration" element={<Registration />} /> */}
+          <Route path="/registration" element={<Registration />} />
           <Route element={<PrivateRoute />}>
             <Route path="/usertasks" element={<UserTasks />} />
           </Route>

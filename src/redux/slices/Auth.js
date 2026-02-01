@@ -40,6 +40,7 @@ const Auth = createSlice({
     },
     logOut(state) {
       state.token = '';
+      localStorage.removeItem('token')
     },
     // register(state, action) {
     // 	state.token = action.payload
@@ -50,7 +51,6 @@ const Auth = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUsers.pending, (state) => {})
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.token = action.payload;
       })

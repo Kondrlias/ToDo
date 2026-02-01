@@ -98,18 +98,21 @@ export const checkTask = createAsyncThunk(
 );
 
 export const editTask = createAsyncThunk(
-  'tasks/checkTasks',
-  async (id, thunkAPI) => {
+  'tasks/editTasks',
+  async ({ id, title }, thunkAPI) => {
     try {
       const store = thunkAPI.getState();
       const response = await fetch(
-        `https://todo-redev.herokuapp.com/api/todos/${id}/isCompleted`,
+        `https://todo-redev.herokuapp.com/api/todos/${id}`,
         {
           method: 'PATCH',
           headers: {
             Authorization: `Bearer ${store.token.token}`,
             'Content-Type': 'application/json',
           },
+          body: JSON.stringify({
+            title: title,
+          }),
         }
       );
       const data = await response.json();
@@ -128,15 +131,6 @@ const initialState = {
 const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
-  // reducers: {
-  //   editTask(state, action) {
-  //     const task = state.tasks.find((t) => t.id === action.payload.id);
-  //     if (task) {
-  //       task.title = action.payload.title;
-  //     }
-  //   },
-
-  // },
   selectors: {
     selectTasks: (state) => state.tasks,
   },
@@ -160,9 +154,9 @@ const tasksSlice = createSlice({
         }
       })
       .addCase(editTask.fulfilled, (state, action) => {
-        const task = state.tasks.find((t) => t.id === action.payload[0].id);
+        const task = state.tasks.find((t) => t.id === action.payload.id);
         if (task) {
-          task.title = action.payload[0].title;
+          task.title = action.payload.title;
         }
       })
       .addMatcher(
@@ -174,6 +168,5 @@ const tasksSlice = createSlice({
   },
 });
 
-// export const { editTask, deleteAll } = tasksSlice.actions;
 export const { selectTasks } = tasksSlice.selectors;
 export default tasksSlice.reducer;

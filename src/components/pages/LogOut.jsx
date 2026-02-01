@@ -7,7 +7,7 @@ export default function LogOut() {
   const dispatch = useDispatch();
 
   const handleLogOut = async () => {
-    dispatch(logOut);
+    dispatch(logOut());
     navigate('/');
   };
 
