@@ -1,16 +1,16 @@
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { getTasks, selectTasks } from '../redux/slices/tasksSlice'
-import TaskItem from './TaskItem'
-import NumerTasks from './shared/NumerTasks'
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getTasks, selectTasks } from '../redux/slices/tasksSlice';
+import TaskItem from './TaskItem';
+import NumerTasks from './shared/NumerTasks';
 
 const ShowTasks = () => {
   const tasks = useSelector(selectTasks);
-  const dispatch = useDispatch('');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getTasks());
-  }, []);
+  }, [dispatch]);
 
   if (!tasks.length) return <h2>Wait your tasks...</h2>;
 

@@ -1,21 +1,23 @@
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { checkTask, editTask, selectTasks } from '../redux/slices/tasksSlice'
-import { DeleteButton } from './shared/deleteButton'
-import DoneCheacked from './shared/DoneCheacked'
-import InputTitle from './shared/InputTitle'
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { checkTask, editTask, selectTasks } from '../redux/slices/tasksSlice';
+import { DeleteButton } from './shared/deleteButton';
+import DoneCheacked from './shared/DoneCheacked';
+import InputTitle from './shared/InputTitle';
 
-
-const TaskItem = ({ task }) => {;
+const TaskItem = ({ task }) => {
   const dispatch = useDispatch();
   const [isEdit, setIsEdit] = useState(false);
   const [editText, setEditText] = useState(task?.title);
-  const [error, setError] = useState('')
-
+  const [error, setError] = useState('');
 
   useEffect(() => {
     setEditText(task.title);
   }, [task.title]);
+
+  const handleCheacked = () => {
+    dispatch(checkTask(task.id));
+  };
 
   const handleEdit = () => {
     if (!editText.trim()) {
@@ -40,16 +42,19 @@ const TaskItem = ({ task }) => {;
   };
 
   if (!task) return null;
-  
+
   return (
     <div className="">
       {!isEdit ? (
         <div className=" flex gap-5 items-center justify-between mt-2 mb-2">
           <div className="flex gap-8 items-center">
-            <DoneCheacked id={task.id} />
+            <DoneCheacked
+              isCompleted={task.isCompleted}
+              onToggle={handleCheacked}
+            />
             <p
               className={task.isCompleted ? 'isDone' : ''}
-              onClick={() => dispatch(checkTask(task.id))}
+              onClick={handleCheacked}
             >
               {task.title}
             </p>

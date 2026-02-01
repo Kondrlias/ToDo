@@ -8,13 +8,13 @@ function NumerTasks() {
   return (
     <div className="m-2 flex justify-between items-center">
       <p>All tasks: {tasks.length}</p>
-      <button
+      {/* <button
         onClick={() => {
           dispatch(deleteAll());
         }}
       >
         Delete All
-      </button>
+      </button> */}
     </div>
   );
 }
