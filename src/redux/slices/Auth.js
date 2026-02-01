@@ -1,51 +1,41 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import instance from '../../api';
 
 export const fetchUsers = createAsyncThunk(
-  'users/fetchUsers',
+  'auth/fetchUsers',
   async ({ email, password }, thunkAPI) => {
     try {
-      const response = await fetch(
-        `https://todo-redev.herokuapp.com/api/auth/login`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
-      const data = await response.json();
-      if (!response.ok) {
-        return thunkAPI.rejectWithValue(data.message || 'Login failed');
-      }
-      localStorage.setItem('token', data.token);
-      return data.token;
+      const response = await instance.post(`/auth/login`, {
+        email,
+        password,
+      });
+      const token = response.data.token;
+      localStorage.setItem('token', token);
+      return token;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 'Login failed'
+      );
     }
   }
 );
 
 export const registerUser = createAsyncThunk(
-  'users/register',
+  'auth/register',
   async ({ username, email, password, gender, age }, thunkAPI) => {
     try {
-      const response = await fetch(
-        `https://todo-redev.herokuapp.com/api/users/register`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, email, password, gender, age }),
-        }
-      );
-      const data = await response.json();
-      if (!response.ok) {
-        return thunkAPI.rejectWithValue(data.message || 'Register failed');
-      }
-      return data.token;
+      const response = await instance.post(`/users/register`, {
+        username,
+        email,
+        password,
+        gender,
+        age,
+      });
+      return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 'Register failed'
+      );
     }
   }
 );
@@ -74,9 +64,12 @@ const Auth = createSlice({
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.token = action.payload;
       })
-      .addCase(fetchUsers.rejected, (state, action) => {
-        state.error = action.payload;
-      });
+      .addMatcher(
+        (action) => action.type.endsWith('/rejected'),
+        (state, action) => {
+          state.error = action.payload || action.error?.message;
+        }
+      );
   },
 });
 

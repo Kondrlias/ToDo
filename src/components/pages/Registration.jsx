@@ -178,7 +178,7 @@ const Registration = () => {
           />
           <p style={{ color: 'red' }}>{errors.age?.message}</p>
         </div>
-        <button type="primary" htmlType="submit">
+        <button type="submit" className="mt-5">
           Зарегистрироваться
         </button>
       </form>

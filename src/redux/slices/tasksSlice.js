@@ -1,25 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import instance from '../../api';
 
 export const getTasks = createAsyncThunk(
   'tasks/getTasks',
-  async (state, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
-      const store = thunkAPI.getState();
-      const response = await fetch(
-        `https://todo-redev.herokuapp.com/api/todos`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${store.token.token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      const data = await response.json();
-      console.log(data);
-      return data;
+      const response = await instance.get(`/todos`, {});
+      return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || error.message
+      );
     }
   }
 );
@@ -28,21 +19,8 @@ export const createTasks = createAsyncThunk(
   'tasks/createTasks',
   async (state, thunkAPI) => {
     try {
-      const store = thunkAPI.getState();
-      const response = await fetch(
-        `https://todo-redev.herokuapp.com/api/todos`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${store.token.token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ title: state }),
-        }
-      );
-      const data = await response.json();
-      console.log(data);
-      return data;
+      const response = await instance.post(`/todos`, state);
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -53,20 +31,8 @@ export const deleteTask = createAsyncThunk(
   'tasks/deleteTasks',
   async (id, thunkAPI) => {
     try {
-      const store = thunkAPI.getState();
-      const response = await fetch(
-        `https://todo-redev.herokuapp.com/api/todos/${id}`,
-        {
-          method: 'Delete',
-          headers: {
-            Authorization: `Bearer ${store.token.token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      const data = await response.json();
-      console.log(data);
-      return data;
+      const response = await instance.delete(`todos/${id}`);
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -77,20 +43,8 @@ export const checkTask = createAsyncThunk(
   'tasks/checkTasks',
   async (id, thunkAPI) => {
     try {
-      const store = thunkAPI.getState();
-      const response = await fetch(
-        `https://todo-redev.herokuapp.com/api/todos/${id}/isCompleted`,
-        {
-          method: 'PATCH',
-          headers: {
-            Authorization: `Bearer ${store.token.token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      const data = await response.json();
-      console.log(data);
-      return data;
+      const response = await instance.patch(`/todos/${id}/isCompleted`);
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -101,23 +55,8 @@ export const editTask = createAsyncThunk(
   'tasks/editTasks',
   async ({ id, title }, thunkAPI) => {
     try {
-      const store = thunkAPI.getState();
-      const response = await fetch(
-        `https://todo-redev.herokuapp.com/api/todos/${id}`,
-        {
-          method: 'PATCH',
-          headers: {
-            Authorization: `Bearer ${store.token.token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: title,
-          }),
-        }
-      );
-      const data = await response.json();
-      console.log(data);
-      return data;
+      const response = await instance.patch(`/todos/${id}`, { title });
+      return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -138,8 +77,12 @@ const tasksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getTasks.pending, (state, action) => {
+        state.loading = true;
+      })
       .addCase(getTasks.fulfilled, (state, action) => {
         state.tasks = action.payload;
+        state.loading = false;
       })
       .addCase(createTasks.fulfilled, (state, action) => {
         state.tasks.push(action.payload);
@@ -165,12 +108,6 @@ const tasksSlice = createSlice({
         (action) => action.type.endsWith('/rejected'),
         (state, action) => {
           state.error = action.payload;
-        }
-      )
-      .addMatcher(
-        (action) => action.type.endsWith('/pending'),
-        (state) => {
-          state.loading = true;
         }
       )
       .addMatcher(

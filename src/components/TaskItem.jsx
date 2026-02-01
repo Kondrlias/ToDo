@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { checkTask, editTask } from '../redux/slices/tasksSlice';
 import { DeleteButton } from './shared/deleteButton';
 import DoneCheacked from './shared/DoneCheacked';

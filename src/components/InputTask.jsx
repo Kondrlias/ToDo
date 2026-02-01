@@ -15,7 +15,7 @@ const InputTask = () => {
 
   const addTask = () => {
     if (text.trim()) {
-      dispatch(createTasks(text));
+      dispatch(createTasks({ title: text }));
       dispatch(clear());
       setError('');
     } else {
